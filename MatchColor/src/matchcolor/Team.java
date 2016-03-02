@@ -16,6 +16,11 @@ public class Team {
     private static ArrayList<String> opponent = new ArrayList<>();
     private String number;
     
+    public Team(String n)
+    {
+        number = n;
+    }
+    
     public ArrayList<String> getAllies(){
         return alliance;
     }
@@ -33,19 +38,16 @@ public class Team {
             opponent.add(teams.get(2));
             opponent.add(teams.get(3));
         }
-        
         else if(teams.get(1).equals(number)){
             alliance.add(teams.get(0));
             opponent.add(teams.get(2));
             opponent.add(teams.get(3));
         }
-        
         else if(teams.get(2).equals(number)){
             alliance.add(teams.get(3));
             opponent.add(teams.get(1));
             opponent.add(teams.get(0));
         }
-        
         else if(teams.get(3).equals(number)){
             alliance.add(teams.get(2));
             opponent.add(teams.get(1));
