@@ -7,6 +7,8 @@ package matchcolor;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -41,14 +43,16 @@ public class Match {
     XSSFColor allyColor;
     XSSFCellStyle opponentStyle;
     XSSFColor opponentColor;
+    FileOutputStream fileOut;
     
     
-    public Match(String R1, String R2, String R3, String R4, String t, int r){
+    public Match(String R1, String R2, String R3, String R4, String t, int r) throws FileNotFoundException{
         teams.add(R1);
         teams.add(R2);
         teams.add(R3);
         teams.add(R4);
         team = t;
+        row = r;
         
         try{ 
             myFile = new File("DataFiles/SampleMatches.xlsx");//CHANGE NAME TO CURRENT COMPETITION
@@ -77,6 +81,7 @@ public class Match {
         opponentColor = new XSSFColor(Color.decode("#DF5555"));
         opponentStyle.setFillForegroundColor(opponentColor);
         opponentStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        fileOut = new FileOutputStream("DataFiles/SampleMatches.xls");
     }
     
     public ArrayList<String> getTeams()
@@ -99,14 +104,17 @@ public class Match {
         for(String a:ally)
         {
             for(String e: teams){
+                /*System.out.println("ally team: " + a + "us team: " + e);*/
                 if(a.equals(e))
                 {
                     otherIndex = teams.indexOf(e);
+                    /*System.out.println("It has ally from Matches");*/
                     return true;
                 }
                     
             }
         }
+        /*System.out.println("Nada in allies");*/
         return false;
     }
     
@@ -115,6 +123,7 @@ public class Match {
         for(String a: opponent)
         {
             for(String e: teams){
+                /*System.out.println("opp team: " + a + " us team: " + e);*/
                 if(a.equals(e))
                     return true;
             }
@@ -122,7 +131,7 @@ public class Match {
         return false;
     }
     
-    public void setColour()
+    public void setColour() throws IOException
     {
             if(team.equals(teams.get(0)))
             {
@@ -168,16 +177,31 @@ public class Match {
                 Cell opp2C = matchRow.getCell(2);
                 opp2C.setCellStyle(opponentStyle);
             }
-            
+           /* wb.write(fileOut);*/
     }
     
-    void setAllyColor(){
+    void setAllyColor() throws IOException{
         Cell allyC = matchRow.getCell(otherIndex +1);
         allyC.setCellStyle(allyStyle);
+        /*wb.write(fileOut);*/
     }
     
-    public void setOppColor(){
+    public void setOppColor() throws IOException{
         Cell oppC = matchRow.getCell(otherIndex +1);
         oppC.setCellStyle(opponentStyle);
+       /*wb.write(fileOut);*/
+    }
+    
+    public int getRowNum(){
+        return row;
+    }
+    
+    public String getTeam(int i)
+    {
+        return teams.get(i);
+    }
+    
+    public int getOtherIndex(){
+        return otherIndex;
     }
 }
