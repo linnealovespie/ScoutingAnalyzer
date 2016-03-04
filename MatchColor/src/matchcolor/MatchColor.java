@@ -21,31 +21,41 @@ import org.apache.poi.xssf.usermodel.XSSFColor;
  * @author Linnea
  */
 public class MatchColor {
-
-    /**
-     * @param args the command line arguments
-     * @throws java.io.IOException
-     */
-    public static void main(String[] args) throws IOException{
-        File myFile = new File("DataFiles/SampleMatches.xlsx");//CHANGE NAME TO CURRENT COMPETITION
-        FileInputStream inp = new FileInputStream(myFile);
-        XSSFWorkbook wb = new XSSFWorkbook(inp);
-        Sheet sh = wb.getSheetAt(0);
-        FileOutputStream fileOut = new FileOutputStream("DataFiles/SampleMatches.xls");
+    
+    //Matches
+    private static File myFile;
+    private static FileInputStream inp;
+    private static XSSFWorkbook wb;
+    private static Sheet sh;
+    private static FileOutputStream fileOut;
+    
+    //Teams
+    private static File f1;
+    private static FileInputStream inp2;
+    private static XSSFWorkbook wb2;
+    private static Sheet sh1;
+    private static Row r1;
+    
+    private ArrayList<String> teamNumbers;
+    
+    public MatchColor() throws FileNotFoundException, IOException{
+        //----------MATCHES DATA FILE
+        myFile = new File("DataFiles/SampleMatches.xlsx");//CHANGE NAME TO CURRENT COMPETITION
+        inp = new FileInputStream(myFile);
+        wb = new XSSFWorkbook(inp);
+        sh = wb.getSheetAt(0);
+        fileOut = new FileOutputStream("DataFiles/SampleMatches.xls");
         
+        //----------TEAM NUMBER DATA FILE
+        f1 = new File("DataFiles/Regionals_Kane_Teams.xls");
+        inp2 = new FileInputStream(f1);
+        wb2 = new XSSFWorkbook(inp2);
+        sh1 = wb.getSheetAt(0);
+        r1 = sh1.getRow(1);
         
-        ArrayList matches = new ArrayList<>();
+        teamNumbers = new ArrayList<>();
         
-        Scanner sc = new Scanner(System.in);
-        System.out.println("What team do you want to color code for first?");
-        String teamNum = sc.next();
-        teamNum.trim();
-        System.out.println("How many matches are there?");
-        int totalMatches = sc.nextInt();
-        
-        Team t = new Team(teamNum);
-        
-        //Your Team style
+         //Your Team style
         XSSFCellStyle teamStyle = (XSSFCellStyle) wb.createCellStyle();
         /*teamStyle.setFillForegroundColor(IndexedColors.SEA_GREEN.getIndex());*/
         XSSFColor teamColor = new XSSFColor(Color.decode("#98FB98"));
@@ -63,9 +73,41 @@ public class MatchColor {
         XSSFColor opponentColor = new XSSFColor(Color.decode("#DF5555"));
         opponentStyle.setFillForegroundColor(opponentColor);
         opponentStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+    }
+
+    public ArrayList<String> getTeamNums(){
+        Cell teamCell;
+        Row tRow = sh1.getRow(1);
+        for(int i = 0; i < 40; i++)
+        {
+            teamCell = tRow.getCell(i);
+            String teamNum = String.valueOf((int)teamCell.getNumericCellValue());
+            teamNumbers.add(teamNum);
+            System.out.println("Adding team" + teamNum);
+        }
+        return teamNumbers;
+    }
+    /**
+     * @param args the command line arguments
+     * @throws java.io.IOException
+     */
+    public static void main(String[] args) throws IOException{
+        ArrayList matches = new ArrayList<>();
+        
+        Scanner sc = new Scanner(System.in);
+        System.out.println("What team do you want to color code for first?");
+        String teamNum = sc.next();
+        teamNum.trim();
+        System.out.println("How many matches are there?");
+        int totalMatches = sc.nextInt();
+        
+        Team t = new Team(teamNum);
+        
+        //----------CELL STYLES----------//
+       
         fileOut = new FileOutputStream("DataFiles/SampleMatches.xls");
         
-        //get the team numbers
+        //get the team numbers for each match
         for(int i = 1; i <= totalMatches; i++)
         {
                 Row row = sh.getRow(i);
