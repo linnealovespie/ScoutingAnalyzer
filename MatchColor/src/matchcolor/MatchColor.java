@@ -12,7 +12,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 
@@ -34,9 +33,14 @@ public class MatchColor {
     private static FileInputStream inp2;
     private static XSSFWorkbook wb2;
     private static Sheet sh1;
-    private static Row r1;
     
-    private ArrayList<String> teamNumbers;
+    private  static XSSFCellStyle teamStyle;
+    private static XSSFColor teamColor;
+    private  static XSSFCellStyle allyStyle;
+    private static XSSFColor allyColor;
+    private  static XSSFCellStyle opponentStyle;
+    private static XSSFColor opponentColor;
+    
     
     public MatchColor() throws FileNotFoundException, IOException{
         //----------MATCHES DATA FILE
@@ -47,89 +51,51 @@ public class MatchColor {
         fileOut = new FileOutputStream("DataFiles/SampleMatches.xls");
         
         //----------TEAM NUMBER DATA FILE
-        f1 = new File("DataFiles/Regionals_Kane_Teams.xls");
+        f1 = new File("DataFiles/Regionals_Kane_Teams.xlsx");
         inp2 = new FileInputStream(f1);
         wb2 = new XSSFWorkbook(inp2);
-        sh1 = wb.getSheetAt(0);
-        r1 = sh1.getRow(1);
+        sh1 = wb2.getSheetAt(0);
         
-        teamNumbers = new ArrayList<>();
-        
+        //----------CELL STYLES----------//
          //Your Team style
-        XSSFCellStyle teamStyle = (XSSFCellStyle) wb.createCellStyle();
+        teamStyle = (XSSFCellStyle) wb.createCellStyle();
         /*teamStyle.setFillForegroundColor(IndexedColors.SEA_GREEN.getIndex());*/
         XSSFColor teamColor = new XSSFColor(Color.decode("#98FB98"));
         teamStyle.setFillForegroundColor(teamColor);
         teamStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
             
         //Alliance Partner Style
-        XSSFCellStyle allyStyle = (XSSFCellStyle) wb.createCellStyle();
-        XSSFColor allyColor = new XSSFColor(Color.decode("#FFFF32"));
+        allyStyle = (XSSFCellStyle) wb.createCellStyle();
+        allyColor = new XSSFColor(Color.decode("#FFFF32"));
         allyStyle.setFillForegroundColor(allyColor);
         allyStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
 
          //Opponent Style
-        XSSFCellStyle opponentStyle = (XSSFCellStyle) wb.createCellStyle();
-        XSSFColor opponentColor = new XSSFColor(Color.decode("#DF5555"));
+        opponentStyle = (XSSFCellStyle) wb.createCellStyle();
+        opponentColor = new XSSFColor(Color.decode("#DF5555"));
         opponentStyle.setFillForegroundColor(opponentColor);
         opponentStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        
     }
 
-    public ArrayList<String> getTeamNums(){
+    public static ArrayList<String> getTeamNums(){
+        Row tRow;
         Cell teamCell;
-        Row tRow = sh1.getRow(1);
-        for(int i = 0; i < 40; i++)
+        ArrayList<String> teamNumbers = new ArrayList<>();
+        for(int i = 1; i < 40; i++)
         {
-            teamCell = tRow.getCell(i);
+            tRow = sh1.getRow(i);
+            teamCell = tRow.getCell(0);
             String teamNum = String.valueOf((int)teamCell.getNumericCellValue());
             teamNumbers.add(teamNum);
             System.out.println("Adding team" + teamNum);
         }
         return teamNumbers;
     }
-    /**
-     * @param args the command line arguments
-     * @throws java.io.IOException
-     */
-    public static void main(String[] args) throws IOException{
-        ArrayList matches = new ArrayList<>();
-        
-        Scanner sc = new Scanner(System.in);
-        System.out.println("What team do you want to color code for first?");
-        String teamNum = sc.next();
-        teamNum.trim();
-        System.out.println("How many matches are there?");
-        int totalMatches = sc.nextInt();
-        
-        Team t = new Team(teamNum);
-        
-        //----------CELL STYLES----------//
-       
-        fileOut = new FileOutputStream("DataFiles/SampleMatches.xls");
-        
-        //get the team numbers for each match
-        for(int i = 1; i <= totalMatches; i++)
-        {
-                Row row = sh.getRow(i);
-                Cell red1 = row.getCell(1);
-                Cell red2 = row.getCell(2);
-                Cell blue1 = row.getCell(3);
-                Cell blue2  = row.getCell(4);
-                String red1Num = String.valueOf((int)red1.getNumericCellValue());
-                String red2Num = String.valueOf((int)red2.getNumericCellValue());
-                String blue1Num = String.valueOf((int)blue1.getNumericCellValue());
-                String blue2Num = String.valueOf((int)blue2.getNumericCellValue());
-                /*System.out.println("RED 1: " + red1Num + " RED 2: " + red2Num + " BLUE1: " + blue1Num + " BLUE2: " + blue2Num);*/
-                Match match = new Match (red1Num, red2Num, blue1Num, blue2Num, teamNum, i);
-                matches.add(match);
-                t.addTeam(match);
-        }
-        /*t.seeAllies();*/
-        for (Iterator it = matches.iterator(); it.hasNext();) {
-            Match m = (Match) it.next();
-            if(m.hasTeam())
-            {
-                Row matchRow = sh.getRow(m.getRowNum());
+    
+    public void setColor(String teamNum, Match m, Sheet teamSheet)
+    {
+           Row matchRow = teamSheet.getRow(m.getRowNum());
                 if(teamNum.equals(m.getTeam(0)))
                 {
                     Cell teamC = matchRow.getCell(1);
@@ -174,27 +140,78 @@ public class MatchColor {
                     Cell opp2C = matchRow.getCell(2);
                     opp2C.setCellStyle(opponentStyle);
                 }
-               /*m.setColour();*/
-               System.out.println("It has team");
+    }
+    /**
+     * @param args the command line arguments
+     * @throws java.io.IOException
+     */
+    public static void main(String[] args) throws IOException{
+        ArrayList matches = new ArrayList<>();
+        MatchColor mc = new MatchColor();
+        ArrayList<String> teamNums = new ArrayList<>();
+        teamNums = getTeamNums();
+        
+        Scanner sc = new Scanner(System.in);
+        //System.out.println("What team do you want to color code for first?");
+        //String teamNum = sc.next();
+        //teamNum.trim();
+        System.out.println("How many matches are there?");
+        int totalMatches = sc.nextInt();
+        
+        
+        Team t;
+        
+       
+        fileOut = new FileOutputStream("DataFiles/SampleMatches.xls");
+        for(int j = 0; j < teamNums.size(); j++)
+        {
+            Sheet teamSheet = wb.cloneSheet(0);
+            t = new Team(teamNums.get(j));
+             //get the team numbers for each match
+            for(int i = 1; i <= totalMatches; i++)
+            {
+                    Row row = teamSheet.getRow(i);
+                    Cell red1 = row.getCell(1);
+                    Cell red2 = row.getCell(2);
+                    Cell blue1 = row.getCell(3);
+                    Cell blue2  = row.getCell(4);
+                    String red1Num = String.valueOf((int)red1.getNumericCellValue());
+                    String red2Num = String.valueOf((int)red2.getNumericCellValue());
+                    String blue1Num = String.valueOf((int)blue1.getNumericCellValue());
+                    String blue2Num = String.valueOf((int)blue2.getNumericCellValue());
+                    /*System.out.println("RED 1: " + red1Num + " RED 2: " + red2Num + " BLUE1: " + blue1Num + " BLUE2: " + blue2Num);*/
+                    Match match = new Match (red1Num, red2Num, blue1Num, blue2Num, teamNums.get(j), i);
+                    matches.add(match);
+                    t.addTeam(match);
+            }
+            /*t.seeAllies();*/
+            for (Iterator it = matches.iterator(); it.hasNext();) {
+                Match m = (Match) it.next();
+                if(m.hasTeam())
+                {
+                   mc.setColor(teamNums.get(j), m, teamSheet);
+                   //System.out.println("It has team");
+
+                }
+                else if(m.hasAlly(t))
+                {
+                    Row matchRow = teamSheet.getRow(m.getRowNum());
+                    Cell allyC = matchRow.getCell(m.getOtherIndex() +1);
+                    allyC.setCellStyle(allyStyle);
+                    //System.out.println("It has ally");
+                }
+                else if(m.hasOpp(t))
+                {
+                    Row matchRow = teamSheet.getRow(m.getRowNum());
+                    Cell oppC = matchRow.getCell(m.getOtherIndex() +1);
+                    oppC.setCellStyle(opponentStyle);
+                    //System.out.println("It has enemy");
+                }
+            }
             
-            }
-            else if(m.hasAlly(t))
-            {
-                /*m.setAllyColor();*/
-                Row matchRow = sh.getRow(m.getRowNum());
-                Cell allyC = matchRow.getCell(m.getOtherIndex() +1);
-                allyC.setCellStyle(allyStyle);
-                System.out.println("It has ally");
-            }
-            else if(m.hasOpp(t))
-            {
-                /*m.setOppColor();*/
-                Row matchRow = sh.getRow(m.getRowNum());
-                Cell oppC = matchRow.getCell(m.getOtherIndex() +1);
-                oppC.setCellStyle(opponentStyle);
-                System.out.println("It has enemy");
-            }
+            t.resetTeam();
         }
+       
         wb.write(fileOut);
         fileOut.close();
     }        

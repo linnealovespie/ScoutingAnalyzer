@@ -62,4 +62,10 @@ public class Team {
             System.out.println("Ally: " + e);
     }
     
+    public void resetTeam()
+    {
+        alliance.clear();
+        opponent.clear();
+        number = "";
+    }
 }
