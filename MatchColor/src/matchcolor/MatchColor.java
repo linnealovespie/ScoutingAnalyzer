@@ -152,22 +152,24 @@ public class MatchColor {
         teamNums = getTeamNums();
         
         Scanner sc = new Scanner(System.in);
-        //System.out.println("What team do you want to color code for first?");
-        //String teamNum = sc.next();
-        //teamNum.trim();
+        /*System.out.println("What team do you want to color code for first?");
+        String teamNum = sc.next();
+        teamNum.trim();*/
         System.out.println("How many matches are there?");
         int totalMatches = sc.nextInt();
         
         
         Team t;
-        
+        Sheet teamSheet;
+        Match match;
        
         fileOut = new FileOutputStream("DataFiles/SampleMatches.xls");
         for(int j = 0; j < teamNums.size(); j++)
         {
-            Sheet teamSheet = wb.cloneSheet(0);
+            teamSheet = wb.cloneSheet(0);
             t = new Team(teamNums.get(j));
-             //get the team numbers for each match
+            //t = new Team(teamNum);
+             //Load in each match
             for(int i = 1; i <= totalMatches; i++)
             {
                     Row row = teamSheet.getRow(i);
@@ -180,34 +182,37 @@ public class MatchColor {
                     String blue1Num = String.valueOf((int)blue1.getNumericCellValue());
                     String blue2Num = String.valueOf((int)blue2.getNumericCellValue());
                     /*System.out.println("RED 1: " + red1Num + " RED 2: " + red2Num + " BLUE1: " + blue1Num + " BLUE2: " + blue2Num);*/
-                    Match match = new Match (red1Num, red2Num, blue1Num, blue2Num, teamNums.get(j), i);
-                    matches.add(match);
+                    match = new Match(red1Num, red2Num, blue1Num, blue2Num, teamNums.get(j), i);
+                    //match = new Match(red1Num, red2Num, blue1Num, blue2Num, teamNum, i);
                     t.addTeam(match);
+                    matches.add(match);
+                    
             }
-            /*t.seeAllies();*/
+            //Loop through and determine color
             for (Iterator it = matches.iterator(); it.hasNext();) {
                 Match m = (Match) it.next();
                 if(m.hasTeam())
                 {
                    mc.setColor(teamNums.get(j), m, teamSheet);
+                   //mc.setColor(teamNum, m, teamSheet);
                    //System.out.println("It has team");
 
                 }
                 else if(m.hasAlly(t))
                 {
                     Row matchRow = teamSheet.getRow(m.getRowNum());
-                    Cell allyC = matchRow.getCell(m.getOtherIndex() +1);
+                    Cell allyC = matchRow.getCell(m.getAllyIndex() +1);
                     allyC.setCellStyle(allyStyle);
                     //System.out.println("It has ally");
                 }
                 else if(m.hasOpp(t))
                 {
                     Row matchRow = teamSheet.getRow(m.getRowNum());
-                    Cell oppC = matchRow.getCell(m.getOtherIndex() +1);
+                    Cell oppC = matchRow.getCell(m.getOppIndex() +1);
                     oppC.setCellStyle(opponentStyle);
                     //System.out.println("It has enemy");
                 }
-            }
+           }
             
             t.resetTeam();
         }

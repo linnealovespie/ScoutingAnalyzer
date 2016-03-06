@@ -29,7 +29,8 @@ public class Match {
 
     private String team;
     private int row;
-    int otherIndex; //Index of the other team, either alliance partner or opponent
+    int allyIndex; //Index of the other team, either alliance partner or opponent
+    int oppIndex;
     
     File myFile;
     InputStream inp;
@@ -45,43 +46,18 @@ public class Match {
     XSSFColor opponentColor;
     FileOutputStream fileOut;
     
-    
-    public Match(String R1, String R2, String R3, String R4, String t, int r) throws FileNotFoundException{
+    public Match(){
+        team = "";
+        row = 0;
+    }
+    public Match(String R1, String R2, String R3, String R4, String t, int r){
+        teams.clear();
         teams.add(R1);
         teams.add(R2);
         teams.add(R3);
         teams.add(R4);
         team = t;
         row = r;
-        
-        try{ 
-            myFile = new File("DataFiles/SampleMatches.xlsx");//CHANGE NAME TO CURRENT COMPETITION
-            inp = new FileInputStream(myFile);
-            wb = new XSSFWorkbook(inp);
-            sh = wb.getSheetAt(0);
-            matchRow = sh.getRow(row);
-        }
-        catch(IOException i){System.out.println("Wrong file, bozo!");}
-        
-        //Your Team style
-        teamStyle = (XSSFCellStyle) wb.createCellStyle();
-        teamStyle.setFillForegroundColor(IndexedColors.SEA_GREEN.getIndex()); 
-        /*teamColor = new XSSFColor(Color.decode("#98FB98"));*/
-        /*teamStyle.setFillForegroundColor(teamColor);*/
-        teamStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
-            
-        //Alliance Partner Style
-        allyStyle = (XSSFCellStyle) wb.createCellStyle();
-        allyColor = new XSSFColor(Color.decode("#FFFF32"));
-        allyStyle.setFillForegroundColor(allyColor);
-        allyStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
-
-         //Opponent Style
-        opponentStyle = (XSSFCellStyle) wb.createCellStyle();
-        opponentColor = new XSSFColor(Color.decode("#DF5555"));
-        opponentStyle.setFillForegroundColor(opponentColor);
-        opponentStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
-        fileOut = new FileOutputStream("DataFiles/SampleMatches.xls");
     }
     
     public ArrayList<String> getTeams()
@@ -104,10 +80,10 @@ public class Match {
         for(String a:ally)
         {
             for(String e: teams){
-                /*System.out.println("ally team: " + a + "us team: " + e);*/
+                System.out.println("ally team: " + a + "us team: " + e);
                 if(a.equals(e))
                 {
-                    otherIndex = teams.indexOf(e);
+                    allyIndex = teams.indexOf(e);
                     /*System.out.println("It has ally from Matches");*/
                     return true;
                 }
@@ -120,76 +96,19 @@ public class Match {
     
     public boolean hasOpp(Team t){
         ArrayList <String> opponent = t.getOpponent();
+        System.out.println("--TEAM: " + team + " MATCH: " + row);
         for(String a: opponent)
         {
             for(String e: teams){
-                /*System.out.println("opp team: " + a + " us team: " + e);*/
+                System.out.println("opp team: " + a + " us team: " + e);
                 if(a.equals(e))
+                {
+                    oppIndex = teams.indexOf(e);
                     return true;
+                }
             }
         }
         return false;
-    }
-    
-    public void setColour() throws IOException
-    {
-            if(team.equals(teams.get(0)))
-            {
-                Cell teamC = matchRow.getCell(1);
-                teamC.setCellStyle(teamStyle);
-                Cell allyC = matchRow.getCell(2);
-                allyC.setCellStyle(allyStyle);
-                Cell opp1C = matchRow.getCell(3);
-                opp1C.setCellStyle(opponentStyle);
-                Cell opp2C = matchRow.getCell(4);
-                opp2C.setCellStyle(opponentStyle);
-            }
-            else if(team.equals(teams.get(1)))
-            {
-                Cell teamC = matchRow.getCell(2);
-                teamC.setCellStyle(teamStyle);
-                Cell allyC = matchRow.getCell(1);
-                allyC.setCellStyle(allyStyle);
-                Cell opp1C = matchRow.getCell(3);
-                opp1C.setCellStyle(opponentStyle);
-                Cell opp2C = matchRow.getCell(4);
-                opp2C.setCellStyle(opponentStyle);
-            }
-            else if(team.equals(teams.get(2)))
-            {
-                Cell teamC = matchRow.getCell(3);
-                teamC.setCellStyle(teamStyle);
-                Cell allyC = matchRow.getCell(4);
-                allyC.setCellStyle(allyStyle);
-                Cell opp1C = matchRow.getCell(1);
-                opp1C.setCellStyle(opponentStyle);
-                Cell opp2C = matchRow.getCell(2);
-                opp2C.setCellStyle(opponentStyle);
-            }
-            else if(team.equals(teams.get(3)))
-            {
-                Cell teamC = matchRow.getCell(4);
-                teamC.setCellStyle(teamStyle);
-                Cell allyC = matchRow.getCell(3);
-                allyC.setCellStyle(allyStyle);
-                Cell opp1C = matchRow.getCell(1);
-                opp1C.setCellStyle(opponentStyle);
-                Cell opp2C = matchRow.getCell(2);
-                opp2C.setCellStyle(opponentStyle);
-            }
-           /* wb.write(fileOut);*/
-    }
-    
-    void setAllyColor() throws IOException{
-        Cell allyC = matchRow.getCell(otherIndex +1);
-        allyC.setCellStyle(allyStyle);
-        /*wb.write(fileOut);*/
-    }
-    
-    public void setOppColor() throws IOException{
-        Cell oppC = matchRow.getCell(otherIndex +1);
-        oppC.setCellStyle(opponentStyle);
-       /*wb.write(fileOut);*/
     }
     
     public int getRowNum(){
@@ -201,7 +120,11 @@ public class Match {
         return teams.get(i);
     }
     
-    public int getOtherIndex(){
-        return otherIndex;
+    public int getAllyIndex(){
+        return allyIndex;
+    }
+    
+    public int getOppIndex(){
+        return oppIndex;
     }
 }

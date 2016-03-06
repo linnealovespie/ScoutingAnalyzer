@@ -16,10 +16,20 @@ public class Team {
     private static ArrayList<String> opponent = new ArrayList<>();
     private String number;
     
+    public Team(){
+        number = "";
+    }
+    
     public Team(String n)
     {
         number = n;
         /*System.out.println("Setting team to: " + number);*/
+    }
+    
+    public void setTeam(String n){
+        number = n;
+        alliance.clear();
+        opponent.clear();
     }
     
     public ArrayList<String> getAllies(){
