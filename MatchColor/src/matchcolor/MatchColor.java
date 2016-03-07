@@ -164,7 +164,7 @@ public class MatchColor {
         Match match;
        
         fileOut = new FileOutputStream("DataFiles/SampleMatches.xls");
-        for(int j = 0; j < teamNums.size(); j++)
+        for(int j = 0; j < teamNums.size(); j++)    
         {
             teamSheet = wb.cloneSheet(0);
             t = new Team(teamNums.get(j));
