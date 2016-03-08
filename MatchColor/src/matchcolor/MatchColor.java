@@ -88,7 +88,7 @@ public class MatchColor {
             teamCell = tRow.getCell(0);
             String teamNum = String.valueOf((int)teamCell.getNumericCellValue());
             teamNumbers.add(teamNum);
-            System.out.println("Adding team" + teamNum);
+            //System.out.println("Adding team" + teamNum);
         }
         return teamNumbers;
     }
@@ -162,13 +162,18 @@ public class MatchColor {
         Team t;
         Sheet teamSheet;
         Match match;
+        Row teamRow;
+        Cell teamCell;
        
         fileOut = new FileOutputStream("DataFiles/SampleMatches.xls");
         for(int j = 0; j < teamNums.size(); j++)    
         {
-            teamSheet = wb.cloneSheet(0);
+            teamSheet = wb.getSheetAt(j);
             t = new Team(teamNums.get(j));
             //t = new Team(teamNum);
+            teamRow = teamSheet.getRow(10);
+            teamCell = teamRow.createCell(7);
+            teamCell.setCellValue(teamNums.get(j));
              //Load in each match
             for(int i = 1; i <= totalMatches; i++)
             {

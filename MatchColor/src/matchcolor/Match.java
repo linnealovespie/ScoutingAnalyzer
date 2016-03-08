@@ -80,7 +80,7 @@ public class Match {
         for(String a:ally)
         {
             for(String e: teams){
-                System.out.println("ally team: " + a + "us team: " + e);
+                //System.out.println("ally team: " + a + "us team: " + e);
                 if(a.equals(e))
                 {
                     allyIndex = teams.indexOf(e);
@@ -96,11 +96,11 @@ public class Match {
     
     public boolean hasOpp(Team t){
         ArrayList <String> opponent = t.getOpponent();
-        System.out.println("--TEAM: " + team + " MATCH: " + row);
+        //System.out.println("--TEAM: " + team + " MATCH: " + row);
         for(String a: opponent)
         {
             for(String e: teams){
-                System.out.println("opp team: " + a + " us team: " + e);
+                //System.out.println("opp team: " + a + " us team: " + e);
                 if(a.equals(e))
                 {
                     oppIndex = teams.indexOf(e);
