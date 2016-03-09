@@ -44,14 +44,14 @@ public class MatchColor {
     
     public MatchColor() throws FileNotFoundException, IOException{
         //----------MATCHES DATA FILE
-        myFile = new File("DataFiles/SampleMatches.xlsx");//CHANGE NAME TO CURRENT COMPETITION
+        myFile = new File("../DataFiles/SampleMatches.xlsx");//CHANGE NAME TO CURRENT COMPETITION
         inp = new FileInputStream(myFile);
         wb = new XSSFWorkbook(inp);
         sh = wb.getSheetAt(0);
-        fileOut = new FileOutputStream("DataFiles/SampleMatches.xls");
+        fileOut = new FileOutputStream("../DataFiles/SampleMatches.xls");
         
         //----------TEAM NUMBER DATA FILE
-        f1 = new File("DataFiles/Regionals_Kane_Teams.xlsx");
+        f1 = new File("../DataFiles/Regionals_Kane_Teams.xlsx");
         inp2 = new FileInputStream(f1);
         wb2 = new XSSFWorkbook(inp2);
         sh1 = wb2.getSheetAt(0);
@@ -158,14 +158,13 @@ public class MatchColor {
         System.out.println("How many matches are there?");
         int totalMatches = sc.nextInt();
         
-        
         Team t;
         Sheet teamSheet;
         Match match;
         Row teamRow;
         Cell teamCell;
        
-        fileOut = new FileOutputStream("DataFiles/SampleMatches.xls");
+        fileOut = new FileOutputStream("../DataFiles/SampleMatches.xls");
         for(int j = 0; j < teamNums.size(); j++)    
         {
             teamSheet = wb.getSheetAt(j);
