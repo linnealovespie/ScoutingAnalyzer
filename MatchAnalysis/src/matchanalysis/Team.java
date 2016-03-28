@@ -4,11 +4,32 @@
  * and open the template in the editor.
  */
 package matchanalysis;
-
+import java.util.ArrayList;
 /**
  *
  * @author may_884771
  */
 public class Team {
+     private static ArrayList<String> alliance = new ArrayList<>();
+     private String number;
+     
+     public Team(){
+        number = "";
+    }
     
+    public Team(String n)
+    {
+        number = n;
+        /*System.out.println("Setting team to: " + number);*/
+    }
+    
+    public void setTeam(String n){
+        number = n;
+        alliance.clear();
+ 
+    }
+    
+    public ArrayList<String> getAllies(){
+        return alliance;
+    }
 }
