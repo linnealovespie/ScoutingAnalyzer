@@ -3,17 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package matchanalysis;
+package matchcolor;
+
 import java.util.ArrayList;
+
 /**
  *
- * @author may_884771
+ * @author Linnea
  */
 public class Team {
-     private static ArrayList<String> alliance = new ArrayList<>();
-     private String number;
-     
-     public Team(){
+    private static ArrayList<String> alliance = new ArrayList<>();
+    private static ArrayList<String> opponent = new ArrayList<>();
+    private String number;
+    
+    public Team(){
         number = "";
     }
     
@@ -26,33 +29,53 @@ public class Team {
     public void setTeam(String n){
         number = n;
         alliance.clear();
- 
+        opponent.clear();
     }
     
     public ArrayList<String> getAllies(){
         return alliance;
     }
     
+    public ArrayList<String> getOpponent(){
+        return opponent;
+    }
+    
+    
     public void addTeam(Match m){
         ArrayList<String> teams = m.getTeams();
         if(teams.get(0).equals(number) && !alliance.contains(teams.get(0)))
         {
             alliance.add(teams.get(1));
+            opponent.add(teams.get(2));
+            opponent.add(teams.get(3));
         }
         if(teams.get(1).equals(number) && !alliance.contains(teams.get(1))){
             alliance.add(teams.get(0));
+            opponent.add(teams.get(2));
+            opponent.add(teams.get(3));
         }
         else if(teams.get(2).equals(number) && !alliance.contains(teams.get(2))){
             alliance.add(teams.get(3));
+            opponent.add(teams.get(1));
+            opponent.add(teams.get(0));
         }
         else if(teams.get(3).equals(number) && !alliance.contains(teams.get(3))){
             alliance.add(teams.get(2));
+            opponent.add(teams.get(1));
+            opponent.add(teams.get(0));
         }
     }
-
-     @Override
-    public String toString()
+    
+    public void seeAllies()
     {
-        return number;
+        for(String e: alliance)
+            System.out.println("Ally: " + e);
+    }
+    
+    public void resetTeam()
+    {
+        alliance.clear();
+        opponent.clear();
+        number = "";
     }
 }

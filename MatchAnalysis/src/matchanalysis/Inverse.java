@@ -1,4 +1,4 @@
-
+package matchanalysis;
 import java.util.Scanner;
  
 public class Inverse 
