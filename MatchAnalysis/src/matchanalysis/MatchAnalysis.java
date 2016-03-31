@@ -35,15 +35,21 @@ public class MatchAnalysis
     private static XSSFWorkbook wb2;
     private static Sheet sh1;
     
-    private static Team[][] teamMatrix;
+    private static int[][] teamMatrix;
+    private static Team[] teams;
+     private static int[] teamNumbers;
+    private static int[] OPR; 
+    private static int[] totalPoints;
+    
+    private static Match[] matches;
     
     public static void main(String argv[]) throws FileNotFoundException, IOException 
     {
-        /*myFile = new File("C:/Users/may_884771/Desktop/GitHub/ScoutingAnalyzer/MatchAnalysis/DataFiles/SampleMatches.xls");//CHANGE NAME TO CURRENT COMPETITION
+        myFile = new File("C:/Users/may_884771/Desktop/GitHub/ScoutingAnalyzer/MatchAnalysis/DataFiles/SampleMatches.xlsx");//CHANGE NAME TO CURRENT COMPETITION
         inp = new FileInputStream(myFile);
         wb = new XSSFWorkbook(inp);
         sh = wb.getSheetAt(0);
-        fileOut = new FileOutputStream("C:/Users/may_884771/Desktop/GitHub/ScoutingAnalyzer/MatchAnalysis/DataFiles/SampleMatches.xls");*/
+        //fileOut = new FileOutputStream("C:/Users/may_884771/Desktop/GitHub/ScoutingAnalyzer/MatchAnalysis/DataFiles/SampleMatches.xlsx");
         
         //----------TEAM NUMBER DATA FILE
         f1 = new File("C:/Users/may_884771/Desktop/GitHub/ScoutingAnalyzer/MatchAnalysis/DataFiles/Regionals_Kane_Teams.xlsx");
@@ -51,9 +57,22 @@ public class MatchAnalysis
         wb2 = new XSSFWorkbook(inp2);
         sh1 = wb2.getSheetAt(0);
         
-        teamMatrix = new Team[41][41]; //Will be 64 for Worlds
+        int numOfTeams = 41; //Will be 64 for Worlds
+        int numOfMatches = 12; //Change to the proper number
+        teamMatrix = new int[numOfTeams][numOfTeams]; 
+        teamNumbers = new int[numOfTeams];
+        teams = new Team[numOfTeams];
+        OPR = new int[numOfTeams];
+        totalPoints = new int[numOfTeams];
+        matches = new Match[numOfMatches];
 
+        //Read in team and match numbers
         loadTeams();
+        loadMatches();
+        
+        for(int m = 1; m <=numOfMatches; m++){
+           //getTeam() //Get the team numbers for red then blue, and index of both, then add to teamMatrix count at [t1][t2]
+        }
     }
     
     static void loadTeams(){
@@ -62,21 +81,29 @@ public class MatchAnalysis
             Row teamRow = sh1.getRow(r+1);
             Cell teamCell = teamRow.getCell(0);
             Team t = new Team(String.valueOf((int)teamCell.getNumericCellValue()));
-            teamMatrix[0][r] = t;
-            teamMatrix[r][0] = t;
-            for(int c = 1; c < 41; c++)
-            {
-                t = new Team("  ");
-                teamMatrix[r][c] = t;
-            }
+            teamNumbers[r] = (int)teamCell.getNumericCellValue();
+            teams[r]= t; 
+            
         }
-       for(int i = 0; i<41; i++)
+    }
+ 
+    static void loadMatches(){
+        for(int r = 0; r < 26; r++)
         {
-            for(int j = 0; j<41; j++)
-            {
-                System.out.printf("%5d", Integer.parseInt(teamMatrix[i][j].toString()));
-            }
-            System.out.println();
+            Row matchRow = sh.getRow(r+1);
+            Cell red1 = matchRow.getCell(1);
+            Cell red2 = matchRow.getCell(2);
+            Cell blue1 = matchRow.getCell(3);
+            Cell blue2  = matchRow.getCell(4);
+            int red1Num = ((int)red1.getNumericCellValue());
+            int red2Num = ((int)red2.getNumericCellValue());
+            int blue1Num = ((int)blue1.getNumericCellValue());
+            int blue2Num = ((int)blue2.getNumericCellValue());
+            Match m = new Match(red1Num, red2Num, blue1Num, blue2Num, r + 1);
         }
+    }
+    
+    static int getTeam(int teamN){
+        return teams.indexOf(teamN);
     }
 }

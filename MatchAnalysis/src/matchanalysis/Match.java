@@ -11,7 +11,7 @@ import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class Match {
-    private ArrayList<String> teams = new ArrayList<>();//Set up as R1, R2, B1, B2
+    private ArrayList<Integer> teams = new ArrayList<>();//Set up as R1, R2, B1, B2
 
     private String team;
     private int row;
@@ -36,13 +36,13 @@ public class Match {
         team = "";
         row = 0;
     }
-    public Match(String R1, String R2, String R3, String R4, String t, int r){
+    public Match(int R1, int R2, int R3, int R4, int r){
         teams.clear();
         teams.add(R1);
         teams.add(R2);
         teams.add(R3);
         teams.add(R4);
-        team = t;
+        //team = t;
         row = r;
     }
     
@@ -84,10 +84,12 @@ public class Match {
         return row;
     }
     
-    public String getTeam(int i)
+    public int getTeam(int i)
     {
         return teams.get(i);
     }
+    
+    //Get get the specified team's index method
     
     public int getAllyIndex(){
         return allyIndex;
