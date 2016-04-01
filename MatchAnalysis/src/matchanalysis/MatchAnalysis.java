@@ -58,7 +58,7 @@ public class MatchAnalysis
         sh1 = wb2.getSheetAt(0);
         
         int numOfTeams = 41; //Will be 64 for Worlds
-        int numOfMatches = 12; //Change to the proper number
+        int numOfMatches = 26; //Change to the proper number
         teamMatrix = new int[numOfTeams][numOfTeams]; 
         teamNumbers = new int[numOfTeams];
         teams = new Team[numOfTeams];
@@ -70,8 +70,35 @@ public class MatchAnalysis
         loadTeams();
         loadMatches();
         
-        for(int m = 1; m <=numOfMatches; m++){
-           //getTeam() //Get the team numbers for red then blue, and index of both, then add to teamMatrix count at [t1][t2]
+        for(int m = 0; m < numOfMatches; m++){ // Go through each match and count how many times each team plays with each other
+            System.out.println("MATCH #" + (m+1));
+            int red1 = matches[m].getTeam(0);
+            int red2 = matches[m].getTeam(1);
+            int red1Index = Arrays.binarySearch(teamNumbers, red1);
+            System.out.println("Red 1 Index : " + red1Index);
+            int red2Index = Arrays.binarySearch(teamNumbers, red2);
+            System.out.println("Red 2 Index : " + red2Index);
+            if(red1Index > -1 && red2Index > -1)
+                {teamMatrix[red1Index][red2Index]++;} 
+            else {System.out.println("Red Team doesn't exist");}
+            
+            
+            int blue1 = matches[m].getTeam(2);
+            int blue2 = matches[m].getTeam(3);
+            int blue1Index = Arrays.binarySearch(teamNumbers, blue1);
+            System.out.println("Blue 1 Index : " + blue1Index);
+            int blue2Index = Arrays.binarySearch(teamNumbers, blue2);
+            System.out.println("Blue 2 Index : " + blue2Index);
+            if(blue1Index > -1 && blue2Index > -1)
+                {teamMatrix[blue1Index][blue2Index]++;} 
+            else {System.out.println("Blue Team doesn't exist");}
+        }
+        
+        for(int r = 0; r < numOfTeams;  r++){
+            for(int c = 0; c < numOfTeams; c++){
+                System.out.print(teamMatrix[r][c] + " ");
+            }
+            System.out.println();
         }
     }
     
@@ -100,6 +127,7 @@ public class MatchAnalysis
             int blue1Num = ((int)blue1.getNumericCellValue());
             int blue2Num = ((int)blue2.getNumericCellValue());
             Match m = new Match(red1Num, red2Num, blue1Num, blue2Num, r + 1);
+            matches[r] = m;
         }
     }
     
