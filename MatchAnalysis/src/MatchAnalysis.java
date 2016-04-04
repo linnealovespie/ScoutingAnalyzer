@@ -9,16 +9,13 @@
  *
  * @author may_884771
  */
-import java.awt.Color;
 import java.util.*;
 import java.io.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFColor;
+//import Jama.*;
 public class MatchAnalysis 
 {
     
@@ -35,7 +32,7 @@ public class MatchAnalysis
     private static XSSFWorkbook wb2;
     private static Sheet sh1;
     
-    private static int[][] teamMatrix;
+    private static double[][] teamMatrix;
     private static Team[] teams;
      private static int[] teamNumbers;
     private static int[] OPR; 
@@ -65,7 +62,7 @@ public class MatchAnalysis
         
         numOfTeams = 36; //Will be 64 for Worlds
         numOfMatches = 81; //Change to the proper number
-        teamMatrix = new int[numOfTeams][numOfTeams]; 
+        teamMatrix = new double[numOfTeams][numOfTeams]; 
         teamNumbers = new int[numOfTeams];
         teams = new Team[numOfTeams];
         OPR = new int[numOfTeams];
@@ -86,10 +83,15 @@ public class MatchAnalysis
             System.out.println("Red 2 Index : " + red2Index);
             if(red1Index > -1 && red2Index > -1)
             {
+                //Add a count to having played with the team
                 teamMatrix[red1Index][red2Index]++;
                 teamMatrix[red2Index][red1Index]++;
+                //Add the other allinace partner to the Team's list of them
                 teams[red1Index].addAlly(red2);
                 teams[red2Index].addAlly(red1);
+                //Add the alliance's score to the total score of each team
+                teams[red1Index].addScore(matches[m].getRedScore());
+                teams[red2Index].addScore(matches[m].getRedScore());
             }
             else {System.out.println("Red Team doesn't exist");}
             
@@ -102,20 +104,38 @@ public class MatchAnalysis
             System.out.println("Blue 2 Index : " + blue2Index);
             if(blue1Index > -1 && blue2Index > -1)
             {
+                //Add a count to having played with the team
                 teamMatrix[blue2Index][blue1Index]++;
                 teamMatrix[blue1Index][blue2Index]++;
+                //Add the other allinace partner to the Team's list of them
                 teams[blue1Index].addAlly(blue2);
                 teams[blue2Index].addAlly(blue1);
+                //Add the alliance's score to the total score of each team
+                teams[blue1Index].addScore(matches[m].getBlueScore());
+                teams[blue2Index].addScore(matches[m].getBlueScore());
             } 
             else {System.out.println("Blue Team doesn't exist");}
         }
         
+        //Print out the matrix before inversion
+        System.out.println("****Matrix before inversion");
         for(int r = 0; r < numOfTeams;  r++){
             for(int c = 0; c < numOfTeams; c++){
                 System.out.print(teamMatrix[r][c] + " ");
             }
             System.out.println();
         }
+        
+        //Matrix m = new Matrix(teamMatrix); 
+        m.inverse();
+        System.out.println("****Matrix after inversion");
+        System.out.println(m.toString());
+        /*for(int r = 0; r < numOfTeams;  r++){
+            for(int c = 0; c < numOfTeams; c++){
+                System.out.print(teamMatrix[r][c] + " ");
+            }
+            System.out.println();
+        }*/
         
         /*for(int j = 0; j < numOfTeams; j++)
         {

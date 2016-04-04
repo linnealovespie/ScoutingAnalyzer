@@ -97,6 +97,15 @@ public class Match {
         return allyIndex;
     }
     
+    public int getRedScore(){
+        return redScore; 
+    }
+    
+    public int getBlueScore(){
+        return blueScore;
+    }
+    
+    @Override
     public String toString(){
         String ret = "Match Number: " + row + "\nR1 = " + teams.get(0) + " R2 = "+ teams.get(1) + "\nB1 = " + teams.get(2) + " B2 = " + teams.get(3) + "\nRed Score: " + 
                 redScore + " Blue Score : " + blueScore;

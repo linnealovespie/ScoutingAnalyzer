@@ -12,11 +12,12 @@ import java.util.ArrayList;
 public class Team {
      private ArrayList<Integer> alliance;
      private String number;
+     private int totScore; 
      
      public Team(){
         number = "";
         alliance = new ArrayList<Integer>();
-        
+        totScore = 0;
     }
     
     public Team(String n)
@@ -24,6 +25,7 @@ public class Team {
         number = n;
         /*System.out.println("Setting team to: " + number);*/
         alliance = new ArrayList<Integer>();
+        totScore = 0;
     }
     
     public void setTeam(String n){
@@ -41,6 +43,9 @@ public class Team {
         return alliance;
     }
     
+    public void addScore(int s){
+        totScore += s;
+    }
     
 
      @Override
