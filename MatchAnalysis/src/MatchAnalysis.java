@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package matchanalysis;
+
 
 /**
  *
@@ -43,22 +43,28 @@ public class MatchAnalysis
     
     private static Match[] matches;
     
+    private static int numOfTeams;
+    private static int numOfMatches;
+    
+    
+    
     public static void main(String argv[]) throws FileNotFoundException, IOException 
     {
-        myFile = new File("C:/Users/may_884771/Desktop/GitHub/ScoutingAnalyzer/MatchAnalysis/DataFiles/SampleMatches.xlsx");//CHANGE NAME TO CURRENT COMPETITION
+        myFile = new File("DataFiles/ESupers_Hopper_Match_Results.xlsx");
+        //myFile = new File("C:/Users/may_884771/Desktop/GitHub/ScoutingAnalyzer/MatchAnalysis/DataFiles/SampleMatches.xlsx");//CHANGE NAME TO CURRENT COMPETITION
         inp = new FileInputStream(myFile);
         wb = new XSSFWorkbook(inp);
         sh = wb.getSheetAt(0);
         //fileOut = new FileOutputStream("C:/Users/may_884771/Desktop/GitHub/ScoutingAnalyzer/MatchAnalysis/DataFiles/SampleMatches.xlsx");
         
         //----------TEAM NUMBER DATA FILE
-        f1 = new File("C:/Users/may_884771/Desktop/GitHub/ScoutingAnalyzer/MatchAnalysis/DataFiles/Regionals_Kane_Teams.xlsx");
+        f1 = new File("DataFiles/ESupers_Hopper_Teams.xlsx");
         inp2 = new FileInputStream(f1);
         wb2 = new XSSFWorkbook(inp2);
         sh1 = wb2.getSheetAt(0);
         
-        int numOfTeams = 41; //Will be 64 for Worlds
-        int numOfMatches = 26; //Change to the proper number
+        numOfTeams = 36; //Will be 64 for Worlds
+        numOfMatches = 81; //Change to the proper number
         teamMatrix = new int[numOfTeams][numOfTeams]; 
         teamNumbers = new int[numOfTeams];
         teams = new Team[numOfTeams];
@@ -75,11 +81,16 @@ public class MatchAnalysis
             int red1 = matches[m].getTeam(0);
             int red2 = matches[m].getTeam(1);
             int red1Index = Arrays.binarySearch(teamNumbers, red1);
-            System.out.println("Red 1 Index : " + red1Index);
+            System.out.println("Red 1 Index : " + red1Index);//Index and corresponding team works 
             int red2Index = Arrays.binarySearch(teamNumbers, red2);
             System.out.println("Red 2 Index : " + red2Index);
             if(red1Index > -1 && red2Index > -1)
-                {teamMatrix[red1Index][red2Index]++;} 
+            {
+                teamMatrix[red1Index][red2Index]++;
+                teamMatrix[red2Index][red1Index]++;
+                teams[red1Index].addAlly(red2);
+                teams[red2Index].addAlly(red1);
+            }
             else {System.out.println("Red Team doesn't exist");}
             
             
@@ -90,7 +101,12 @@ public class MatchAnalysis
             int blue2Index = Arrays.binarySearch(teamNumbers, blue2);
             System.out.println("Blue 2 Index : " + blue2Index);
             if(blue1Index > -1 && blue2Index > -1)
-                {teamMatrix[blue1Index][blue2Index]++;} 
+            {
+                teamMatrix[blue2Index][blue1Index]++;
+                teamMatrix[blue1Index][blue2Index]++;
+                teams[blue1Index].addAlly(blue2);
+                teams[blue2Index].addAlly(blue1);
+            } 
             else {System.out.println("Blue Team doesn't exist");}
         }
         
@@ -100,10 +116,16 @@ public class MatchAnalysis
             }
             System.out.println();
         }
+        
+        /*for(int j = 0; j < numOfTeams; j++)
+        {
+            System.out.println("Allies for team " + teamNumbers[j] + " " + (teams[j].getAllies()).toString());
+        }*/
+        
     }
     
     static void loadTeams(){
-        for(int r = 0; r < 41; r++)
+        for(int r = 0; r < numOfTeams; r++)
         {
             Row teamRow = sh1.getRow(r+1);
             Cell teamCell = teamRow.getCell(0);
@@ -115,23 +137,28 @@ public class MatchAnalysis
     }
  
     static void loadMatches(){
-        for(int r = 0; r < 26; r++)
+        for(int r = 0; r < numOfMatches; r++)
         {
             Row matchRow = sh.getRow(r+1);
             Cell red1 = matchRow.getCell(1);
             Cell red2 = matchRow.getCell(2);
             Cell blue1 = matchRow.getCell(3);
             Cell blue2  = matchRow.getCell(4);
+            Cell redS = matchRow.getCell(5);
+            Cell blueS = matchRow.getCell(6);
             int red1Num = ((int)red1.getNumericCellValue());
             int red2Num = ((int)red2.getNumericCellValue());
             int blue1Num = ((int)blue1.getNumericCellValue());
             int blue2Num = ((int)blue2.getNumericCellValue());
-            Match m = new Match(red1Num, red2Num, blue1Num, blue2Num, r + 1);
+            int redScore = ((int)redS.getNumericCellValue());
+            int blueScore = ((int)blueS.getNumericCellValue());
+            Match m = new Match(red1Num, red2Num, blue1Num, blue2Num, r + 1, redScore, blueScore);
             matches[r] = m;
+            System.out.println("***" + m.toString());
         }
     }
     
-    static int getTeam(int teamN){
-        return teams.indexOf(teamN);
-    }
+    /*static int getTeam(int teamN){
+        return teamNumbers.indexOf(teamN); // Need to make an actual indexOf() method
+    }*/
 }

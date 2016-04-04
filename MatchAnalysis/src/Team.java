@@ -3,24 +3,27 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package matchanalysis;
+
 import java.util.ArrayList;
 /**
  *
  * @author may_884771
  */
 public class Team {
-     private static ArrayList<String> alliance = new ArrayList<>();
+     private ArrayList<Integer> alliance;
      private String number;
      
      public Team(){
         number = "";
+        alliance = new ArrayList<Integer>();
+        
     }
     
     public Team(String n)
     {
         number = n;
         /*System.out.println("Setting team to: " + number);*/
+        alliance = new ArrayList<Integer>();
     }
     
     public void setTeam(String n){
@@ -29,7 +32,12 @@ public class Team {
  
     }
     
-    public ArrayList<String> getAllies(){
+    public void addAlly(int a){
+        alliance.add(a);
+    }
+    
+    
+    public ArrayList<Integer> getAllies(){
         return alliance;
     }
     
