@@ -15,7 +15,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-//import Jama.*;
+import Jama.*;
 public class MatchAnalysis 
 {
     
@@ -126,10 +126,10 @@ public class MatchAnalysis
             System.out.println();
         }
         
-        //Matrix m = new Matrix(teamMatrix); 
-        m.inverse();
+        Matrix m = new Matrix(teamMatrix); 
+        Matrix invt = m.inverse();
         System.out.println("****Matrix after inversion");
-        System.out.println(m.toString());
+        System.out.println(invt.toString());
         /*for(int r = 0; r < numOfTeams;  r++){
             for(int c = 0; c < numOfTeams; c++){
                 System.out.print(teamMatrix[r][c] + " ");
