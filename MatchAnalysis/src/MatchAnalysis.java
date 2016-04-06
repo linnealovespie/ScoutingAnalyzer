@@ -36,7 +36,7 @@ public class MatchAnalysis
     private static Team[] teams;
      private static int[] teamNumbers;
     private static int[] OPR; 
-    private static int[] totalPoints;
+    private static double[] totalPoints;
     
     private static Match[] matches;
     
@@ -66,7 +66,7 @@ public class MatchAnalysis
         teamNumbers = new int[numOfTeams];
         teams = new Team[numOfTeams];
         OPR = new int[numOfTeams];
-        totalPoints = new int[numOfTeams];
+        totalPoints = new double[numOfTeams];
         matches = new Match[numOfMatches];
 
         //Read in team and match numbers
@@ -90,8 +90,8 @@ public class MatchAnalysis
                 teams[red1Index].addAlly(red2);
                 teams[red2Index].addAlly(red1);
                 //Add the alliance's score to the total score of each team
-                teams[red1Index].addScore(matches[m].getRedScore());
-                teams[red2Index].addScore(matches[m].getRedScore());
+                totalPoints[red1Index] += (matches[m].getRedScore());
+                totalPoints[red2Index] += (matches[m].getRedScore());
             }
             else {System.out.println("Red Team doesn't exist");}
             
@@ -111,11 +111,16 @@ public class MatchAnalysis
                 teams[blue1Index].addAlly(blue2);
                 teams[blue2Index].addAlly(blue1);
                 //Add the alliance's score to the total score of each team
-                teams[blue1Index].addScore(matches[m].getBlueScore());
-                teams[blue2Index].addScore(matches[m].getBlueScore());
+                totalPoints[blue1Index] += (matches[m].getBlueScore());
+                totalPoints[blue2Index] += (matches[m].getBlueScore());
             } 
             else {System.out.println("Blue Team doesn't exist");}
         }
+        
+        //Print out the total scores
+        /*for(int score: totalPoints){
+            System.out.println(score);
+        }*/
         
         //Print out the matrix before inversion
         System.out.println("****Matrix before inversion");
@@ -130,6 +135,12 @@ public class MatchAnalysis
         Matrix invt = m.inverse();
         System.out.println("****Matrix after inversion");
         System.out.println(invt.toString());
+        
+        Matrix s = new Matrix(totalPoints, 1);
+        Matrix opr = invt.times(s);
+        
+        System.out.println("****OPR of each team \n " + opr.toString());
+        
         /*for(int r = 0; r < numOfTeams;  r++){
             for(int c = 0; c < numOfTeams; c++){
                 System.out.print(teamMatrix[r][c] + " ");
