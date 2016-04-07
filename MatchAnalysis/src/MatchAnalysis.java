@@ -35,7 +35,7 @@ public class MatchAnalysis
     private static double[][] teamMatrix;
     private static Team[] teams;
      private static int[] teamNumbers;
-    private static int[] OPR; 
+    private static double[][] OPR; 
     private static double[] totalPoints;
     
     private static Match[] matches;
@@ -65,7 +65,7 @@ public class MatchAnalysis
         teamMatrix = new double[numOfTeams][numOfTeams]; 
         teamNumbers = new int[numOfTeams];
         teams = new Team[numOfTeams];
-        OPR = new int[numOfTeams];
+        OPR = new double[1][numOfTeams];
         totalPoints = new double[numOfTeams];
         matches = new Match[numOfMatches];
 
@@ -78,9 +78,9 @@ public class MatchAnalysis
             int red1 = matches[m].getTeam(0);
             int red2 = matches[m].getTeam(1);
             int red1Index = Arrays.binarySearch(teamNumbers, red1);
-            System.out.println("Red 1 Index : " + red1Index);//Index and corresponding team works 
+            //System.out.println("Red 1 Index : " + red1Index);//Index and corresponding team works 
             int red2Index = Arrays.binarySearch(teamNumbers, red2);
-            System.out.println("Red 2 Index : " + red2Index);
+            //System.out.println("Red 2 Index : " + red2Index);
             if(red1Index > -1 && red2Index > -1)
             {
                 //Add a count to having played with the team
@@ -118,28 +118,33 @@ public class MatchAnalysis
         }
         
         //Print out the total scores
-        /*for(int score: totalPoints){
+        /*for(double score: totalPoints){
             System.out.println(score);
         }*/
         
         //Print out the matrix before inversion
-        System.out.println("****Matrix before inversion");
+        /*System.out.println("****Matrix before inversion");
         for(int r = 0; r < numOfTeams;  r++){
             for(int c = 0; c < numOfTeams; c++){
                 System.out.print(teamMatrix[r][c] + " ");
             }
             System.out.println();
-        }
+        }*/
         
         Matrix m = new Matrix(teamMatrix); 
         Matrix invt = m.inverse();
-        System.out.println("****Matrix after inversion");
-        System.out.println(invt.toString());
+        //System.out.println("****Matrix after inversion");
+        //System.out.println(invt.toString());
         
         Matrix s = new Matrix(totalPoints, 1);
-        Matrix opr = invt.times(s);
+        Matrix opr = s.times(invt);
         
-        System.out.println("****OPR of each team \n " + opr.toString());
+        OPR = opr.getArray();
+        System.out.println(OPR[0].length);
+        for(int i = 0; i < numOfTeams; i++){
+           System.out.println("TEAM Number: " + teamNumbers[i] + " OPR: " + OPR[0][i] + ' ');
+        }
+        //System.out.println("****OPR of each team \n " + opr.vectorToString());
         
         /*for(int r = 0; r < numOfTeams;  r++){
             for(int c = 0; c < numOfTeams; c++){
@@ -185,7 +190,7 @@ public class MatchAnalysis
             int blueScore = ((int)blueS.getNumericCellValue());
             Match m = new Match(red1Num, red2Num, blue1Num, blue2Num, r + 1, redScore, blueScore);
             matches[r] = m;
-            System.out.println("***" + m.toString());
+            //System.out.println("***" + m.toString());
         }
     }
     
