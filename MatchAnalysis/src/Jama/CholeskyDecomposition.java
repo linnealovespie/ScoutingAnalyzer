@@ -152,6 +152,10 @@ public class CholeskyDecomposition implements java.io.Serializable {
    public Matrix getL () {
       return new Matrix(L,n,n);
    }
+   
+   public double[][] getArray(){
+       return L;
+   }
 
    /** Solve A*X = B
    @param  B   A Matrix with as many rows as A and any number of columns.
