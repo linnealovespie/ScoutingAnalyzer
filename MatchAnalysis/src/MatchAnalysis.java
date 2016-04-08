@@ -65,7 +65,7 @@ public class MatchAnalysis
         teamMatrix = new double[numOfTeams][numOfTeams]; 
         teamNumbers = new int[numOfTeams];
         teams = new Team[numOfTeams];
-        OPR = new double[1][numOfTeams];
+        OPR = new double[numOfTeams][numOfTeams];
         totalPoints = new double[numOfTeams];
         matches = new Match[numOfMatches];
 
@@ -136,10 +136,13 @@ public class MatchAnalysis
         //System.out.println("****Matrix after inversion");
         //System.out.println(invt.toString());
         
-        Matrix s = new Matrix(totalPoints, 1);
-        Matrix opr = s.times(invt);
+        Matrix s = new Matrix(totalPoints, numOfTeams);
+        //Matrix opr = s.times(invt);
         
-        OPR = opr.getArray();
+        CholeskyDecomposition cd = new CholeskyDecomposition(s);
+        Matrix opr = cd.solve(m);
+
+        //OPR = opr.getArray(); 
         System.out.println(OPR[0].length);
         for(int i = 0; i < numOfTeams; i++){
            System.out.println("TEAM Number: " + teamNumbers[i] + " OPR: " + OPR[0][i] + ' ');

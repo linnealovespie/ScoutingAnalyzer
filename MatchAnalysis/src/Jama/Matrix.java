@@ -812,6 +812,8 @@ public class Matrix implements Cloneable, java.io.Serializable {
    */
 
    public Matrix solve (Matrix B) {
+      System.out.println("Matrix A " + this.m + " " + this.n + "Matrix B " + B.m + " " + B.n );
+              
       return (m == n ? (new LUDecomposition(this)).solve(B) :
                        (new QRDecomposition(this)).solve(B));
    }
