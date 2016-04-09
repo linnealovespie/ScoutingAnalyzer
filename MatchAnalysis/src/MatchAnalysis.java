@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import Jama.*;
+import org.apache.poi.ss.usermodel.Workbook;
 public class MatchAnalysis 
 {
     
@@ -24,7 +25,13 @@ public class MatchAnalysis
     private static FileInputStream inp;
     private static XSSFWorkbook wb;
     private static Sheet sh;
+    //private static FileOutputStream fileOut;
+    
+    private static FileInputStream outInputStream;
+    private static File outFile;
+    private static Workbook outWb;
     private static FileOutputStream fileOut;
+    private static Sheet outSh;
     
     //Teams
     private static File f1;
@@ -52,7 +59,12 @@ public class MatchAnalysis
         inp = new FileInputStream(myFile);
         wb = new XSSFWorkbook(inp);
         sh = wb.getSheetAt(0);
-        //fileOut = new FileOutputStream("C:/Users/may_884771/Desktop/GitHub/ScoutingAnalyzer/MatchAnalysis/DataFiles/SampleMatches.xlsx");
+        
+        outFile = new File("DataFiles/SampleOutput.xlsx");
+        outInputStream = new FileInputStream(outFile);
+        outWb = new XSSFWorkbook(outInputStream);
+        outSh = outWb.createSheet();
+        fileOut = new FileOutputStream("DataFiles/SampleOutput.xls");
         
         //----------TEAM NUMBER DATA FILE
         f1 = new File("DataFiles/ESupers_Hopper_Teams.xlsx");
@@ -74,7 +86,7 @@ public class MatchAnalysis
         loadMatches();
         
         for(int m = 0; m < numOfMatches; m++){ // Go through each match and count how many times each team plays with each other
-            System.out.println("MATCH #" + (m+1));
+            //System.out.println("MATCH #" + (m+1));
             int red1 = matches[m].getTeam(0);
             int red2 = matches[m].getTeam(1);
             int red1Index = Arrays.binarySearch(teamNumbers, red1);
@@ -99,9 +111,9 @@ public class MatchAnalysis
             int blue1 = matches[m].getTeam(2);
             int blue2 = matches[m].getTeam(3);
             int blue1Index = Arrays.binarySearch(teamNumbers, blue1);
-            System.out.println("Blue 1 Index : " + blue1Index);
+            //System.out.println("Blue 1 Index : " + blue1Index);
             int blue2Index = Arrays.binarySearch(teamNumbers, blue2);
-            System.out.println("Blue 2 Index : " + blue2Index);
+            //System.out.println("Blue 2 Index : " + blue2Index);
             if(blue1Index > -1 && blue2Index > -1)
             {
                 //Add a count to having played with the team
@@ -117,6 +129,7 @@ public class MatchAnalysis
             else {System.out.println("Blue Team doesn't exist");}
         }
         
+        matrixToSheet();
         //Print out the total scores
         /*for(double score: totalPoints){
             System.out.println(score);
@@ -144,9 +157,9 @@ public class MatchAnalysis
 
         //OPR = opr.getArray(); 
         System.out.println(OPR[0].length);
-        for(int i = 0; i < numOfTeams; i++){
+        /*for(int i = 0; i < numOfTeams; i++){
            System.out.println("TEAM Number: " + teamNumbers[i] + " OPR: " + OPR[0][i] + ' ');
-        }
+        }*/
         //System.out.println("****OPR of each team \n " + opr.vectorToString());
         
         /*for(int r = 0; r < numOfTeams;  r++){
@@ -160,6 +173,8 @@ public class MatchAnalysis
         {
             System.out.println("Allies for team " + teamNumbers[j] + " " + (teams[j].getAllies()).toString());
         }*/
+        
+        
         
     }
     
@@ -197,7 +212,22 @@ public class MatchAnalysis
         }
     }
     
-    /*static int getTeam(int teamN){
-        return teamNumbers.indexOf(teamN); // Need to make an actual indexOf() method
-    }*/
+    static void matrixToSheet() throws IOException{
+        for(int i = 0; i < numOfTeams; i++){ //Load horizontally
+            Row r = outSh.createRow(i+ 7);
+            Cell c = r.getCell(i+7);
+            if (c == null)
+                c = r.createCell(i+7);
+            c.setCellValue(teamNumbers[i]);
+        }
+        for(int j = 0; j < numOfTeams; j++)//Load vertically
+        {
+            Row r = outSh.createRow(j + 2);
+            Cell c = r.getCell(7);
+            if (c == null)
+                c = r.createCell(7);
+            c.setCellValue(teamNumbers[j]);
+            
+        }
+    }
 }

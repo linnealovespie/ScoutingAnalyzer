@@ -48,13 +48,14 @@ public class MatchColor {
         inp = new FileInputStream(myFile);
         wb = new XSSFWorkbook(inp);
         sh = wb.getSheetAt(0);
-        fileOut = new FileOutputStream("../DataFiles/SampleMatches.xls");
+        fileOut = new FileOutputStream("../DataFiles/SampleOutput.xls");
         
         //----------TEAM NUMBER DATA FILE
         f1 = new File("../DataFiles/Regionals_Kane_Teams.xlsx");
         inp2 = new FileInputStream(f1);
         wb2 = new XSSFWorkbook(inp2);
         sh1 = wb2.getSheetAt(0);
+        
         
         //----------CELL STYLES----------//
          //Your Team style
